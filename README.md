@@ -1,3 +1,7 @@
+Here's a quick investigation into depth-first and breadth-first search. The primary goal was to implement both algorithms recursively and non-recursively, an interesting exercise because of the relationship between recursion and the concept of a stack.
+
+To aid this, I've built a very small Python library that can be used to build graphs. These graphs can then be searched using one of the four algorithms available in `graphs.search`.
+
 ### Usage
 
 Instantiate an empty graph
