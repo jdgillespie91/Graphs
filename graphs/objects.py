@@ -58,12 +58,3 @@ class Graph:
         node = get_label(node)
         return sorted(self._graph.__getitem__(node))
 
-
-class Node:
-    def __init__(self, label):
-        self._label = label
-
-    @property
-    def label(self):
-        return self._label
-
