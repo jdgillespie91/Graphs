@@ -2,7 +2,7 @@ from itertools import permutations
 
 import pytest
 
-from ..objects import Graph
+from ..objects import Graph, Tree
 
 
 class TestGraph:
@@ -125,4 +125,100 @@ class TestGraph:
             i = iter(graph)
             for label in sorted(nodes):
                 assert next(i) == label
+
+    def test_bool(self):
+        # An empty graph should return false.
+        graph = Graph()
+        assert not graph
+
+        # A populated graph should return true.
+        graph.add('A')
+        assert graph
+
+
+class TestTree:
+    def test_empty_tree(self):
+        tree = Tree()
+        assert tree == {}
+
+    def test_insert_into_empty_tree(self):
+        tree = Tree()
+        tree.insert('A')
+        assert tree == {'A': set()}
+
+    def test_instantiate_tree_with_node(self):
+        tree = Tree('A')
+        assert tree == {'A': set()}
+
+    def test_insert(self):
+        # Empty tree.
+        tree = Tree()
+        tree.insert('A')
+        assert tree == {'A': set()}
+
+        # Trees with no leaves.
+        tree = Tree('B')
+        tree.insert('A')
+        assert tree == {'A': {'B'}, 'B': {'A'}}
+
+        tree = Tree('B')
+        tree.insert('C')
+        assert tree == {'B': {'C'}, 'C': {'B'}}
+
+        # Trees with one leaf where the root is bigger than the leaf.
+        tree = Tree('D')
+        tree.insert('B')
+        tree.insert('A')
+        assert tree == {'A': {'B'}, 'B': {'A', 'D'}, 'D': {'B'}}
+
+        tree = Tree('D')
+        tree.insert('B')
+        tree.insert('C')
+        assert tree == {'B': {'C', 'D'}, 'C': {'B'}, 'D': {'B'}}
+
+        tree = Tree('D')
+        tree.insert('B')
+        tree.insert('E')
+        assert tree == {'B': {'D'}, 'D': {'B', 'E'}, 'E': {'D'}}
+
+        # Trees with one leaf where the root is bigger than the leaf.
+        tree = Tree('B')
+        tree.insert('D')
+        tree.insert('A')
+        assert tree == {'A': {'B'}, 'B': {'A', 'D'}, 'D': {'B'}}
+
+        tree = Tree('B')
+        tree.insert('D')
+        tree.insert('C')
+        assert tree == {'B': {'D'}, 'C': {'D'}, 'D': {'B', 'C'}}
+
+        tree = Tree('B')
+        tree.insert('D')
+        tree.insert('E')
+        assert tree == {'B': {'D'}, 'D': {'B', 'E'}, 'E': {'D'}}
+
+        # Trees with two leaves.
+        tree = Tree('D')
+        tree.insert('B')
+        tree.insert('F')
+        tree.insert('A')
+        assert tree == {'A': {'B'}, 'B': {'A', 'D'}, 'D': {'B', 'F'}, 'F': {'D'}}
+
+        tree = Tree('D')
+        tree.insert('B')
+        tree.insert('F')
+        tree.insert('C')
+        assert tree == {'B': {'C', 'D'}, 'C': {'B'}, 'D': {'B', 'F'}, 'F': {'D'}}
+
+        tree = Tree('D')
+        tree.insert('B')
+        tree.insert('F')
+        tree.insert('E')
+        assert tree == {'B': {'D'}, 'D': {'B', 'F'}, 'E': {'F'}, 'F': {'D', 'E'}}
+
+        tree = Tree('D')
+        tree.insert('B')
+        tree.insert('F')
+        tree.insert('G')
+        assert tree == {'B': {'D'}, 'D': {'B', 'F'}, 'F': {'D', 'G'}, 'G': {'F'}}
 
