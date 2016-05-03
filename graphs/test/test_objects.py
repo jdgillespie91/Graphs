@@ -151,6 +151,7 @@ class TestTree:
         assert tree == {'A': set()}
 
     def test_insert(self):
+        # TODO Split out tree types into separate tests then use parameterize.
         # Empty tree.
         tree = Tree()
         tree.insert('A')
