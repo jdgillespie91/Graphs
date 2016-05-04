@@ -12,8 +12,7 @@ Instantiate an empty graph
 Add a node
 
 ```python
->>> node = graphs.Node(label='A')
->>> graph.add(node)
+>>> graph.add('A')
 >>> graph
 {'A': set()}
 ```
