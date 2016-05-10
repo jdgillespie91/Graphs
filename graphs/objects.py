@@ -58,18 +58,15 @@ class Tree:
     def _connect(self, first_node, second_node):
         self._graph.connect(first_node, second_node)
 
-    def insert(self, node, subroot=None):
-        # TODO Now that it's working, tidy this method.
-
-        # If the graph is empty, add the node at the root.
+    def insert(self, node):
         if not self._graph:
             self._add(node)
             self._root = node
-            return
+        else:
+            self._insert(node, self._root)
 
-        # Else, start searching at the top of the tree (by default at least).
-        if not subroot:
-            subroot = self._root
+    def _insert(self, node, subroot):
+        # TODO Now that it's working, tidy this method.
 
         # If no leaves, add it.
         if not self._graph[subroot]:
