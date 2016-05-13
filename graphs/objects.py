@@ -100,21 +100,21 @@ class Tree:
                     self._connect(node, root)
                     return
                 else:
-                    self.insert(node, subroot=leaf)
+                    self._insert(node, subroot=leaf)
             else:
                 if node > root:
                     self._add(node)
                     self._connect(node, root)
                     return
                 else:
-                    self.insert(node, subroot=leaf)
+                    self._insert(node, subroot=leaf)
 
         # If two leaves, insert it against the appropriate leaf.
         if len(self._graph[subroot]) == 2:
             if node < subroot:
-                self.insert(node, subroot=self._graph[subroot][0])
+                self._insert(node, subroot=self._graph[subroot][0])
             else:
-                self.insert(node, subroot=self._graph[subroot][1])
+                self._insert(node, subroot=self._graph[subroot][1])
 
     def __eq__(self, other):
         return self._graph.__eq__(other)

@@ -76,31 +76,28 @@ class TestGraph:
         graph.disconnect('foo', 'bar')
         assert graph == {'foo': set(), 'bar': set()}
 
-    def test_iterable(self):
-        graph = Graph()
-        graph.add('foo')
-        for node in graph:
-            assert node == 'foo'
+    def test_iterating_over_graph(self):
+        """ Ensure that we iterate over the nodes in order.
 
-        i = iter(graph)
-        assert next(i) == 'foo'
+        When iterating over the graph, we should be iterating over the nodes
+        in alphabetical order. Unfortunately, the order in which we add nodes
+        has no impact on the order in which we iterate over them.
 
-    def test_getitem(self):
-        graph = Graph()
-        graph.add('foo')
+        It's possible that, by chance, we iterate over the graph
+        alphabetically. As such, we test many graphs here to reduce the
+        likelihood that a pass is by chance alone.
 
-        assert graph['foo'] == []
-        assert graph['foo'] == []
+        """
+        for nodes in permutations('abcdef'):
+            graph = Graph()
+            for node in nodes:
+                graph.add(node)
 
-        graph.add('bar')
-        graph.connect('foo', 'bar')
+            i = iter(graph)
+            for label in sorted(nodes):
+                assert next(i) == label
 
-        assert graph['foo'] == ['bar']
-        assert graph['foo'] == ['bar']
-
-        # The connected nodes should return in order. Since the order is not
-        # fixed, the test can pass by chance. I'll test enough cases that this
-        # is suffiently unlikely.
+    def test_graph_lookup(self):
         graph = Graph()
         graph.add('foo')
 
@@ -111,22 +108,7 @@ class TestGraph:
 
         assert graph['foo'] == sorted(nodes)
 
-    def test_sorted(self):
-        # Permutations of the characters in this string will form the node
-        # labels. The more unique characters there are, the less likely it is
-        # that the test will pass by chance (note it could still happen, but
-        # it's suffiently unlikely).
-        for nodes in permutations('abcdef'):
-            print(nodes)
-            graph = Graph()
-            for node in nodes:
-                graph.add(node)
-
-            i = iter(graph)
-            for label in sorted(nodes):
-                assert next(i) == label
-
-    def test_bool(self):
+    def test_is_graph_empty(self):
         # An empty graph should return false.
         graph = Graph()
         assert not graph
