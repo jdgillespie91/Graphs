@@ -41,21 +41,21 @@ class TestGraph:
         graph.add('bar')
         graph.connect('foo', 'bar')
         assert graph == {
-            'foo': {'bar'}, 
+            'foo': {'bar'},
             'bar': {'foo'}
         }
 
         # Connecting the same nodes again should have no effect.
         graph.connect('foo', 'bar')
         assert graph == {
-            'foo': {'bar'}, 
+            'foo': {'bar'},
             'bar': {'foo'}
         }
 
         # We should be able to connect by node also.
         graph.connect('foo', 'bar')
         assert graph == {
-            'foo': {'bar'}, 
+            'foo': {'bar'},
             'bar': {'foo'}
         }
 
@@ -205,3 +205,5 @@ class TestTree:
         tree.insert('G')
         assert tree == {'B': {'D'}, 'D': {'B', 'F'}, 'F': {'D', 'G'}, 'G': {'F'}}
 
+        # TODO Write a failing test (or test case within this test) to cover bigger trees. At this
+        # point, it's probably necessary to automate this, but we'll see.

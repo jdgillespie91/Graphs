@@ -63,4 +63,3 @@ def recursive_depth_first_search(graph, node=None, discovered=None):
             recursive_depth_first_search(graph, connected_node, discovered)
 
     return discovered
-

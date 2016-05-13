@@ -124,4 +124,3 @@ class Tree:
 
     def __repr__(self):
         return self._graph.__repr__()
-

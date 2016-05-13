@@ -17,7 +17,7 @@ class TestSearch:
 
         for pair in ['AB', 'AC', 'AF', 'AG', 'BC', 'BD', 'CE', 'FG']:
             graph.connect(pair[0], pair[1])
-            
+
         return graph
 
     def test_breadth_first_search(self, graph):
@@ -39,4 +39,3 @@ class TestSearch:
         expected_route = list('ABCEDFG')
         actual_route = recursive_depth_first_search(graph)
         assert expected_route == actual_route
-
