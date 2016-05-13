@@ -1,4 +1,4 @@
-from .objects import Graph
+from .objects import Graph, Node
 from .search import (
     breadth_first_search, recursive_breadth_first_search,
     depth_first_search, recursive_depth_first_search
@@ -6,6 +6,7 @@ from .search import (
 
 __all__ = [
     'Graph',
+    'Node',
     'breadth_first_search',
     'depth_first_search',
     'recursive_breadth_first_search',

@@ -1,3 +1,6 @@
+from functools import total_ordering
+
+
 class Graph:
     def __init__(self):
         self._graph = {}
@@ -59,62 +62,7 @@ class Tree:
         self._graph.connect(first_node, second_node)
 
     def insert(self, node):
-        if not self._graph:
-            self._add(node)
-            self._root = node
-        else:
-            self._insert(node, self._root)
-
-    def _insert(self, node, subroot):
-        # TODO Now that it's working, tidy this method.
-
-        # If no leaves, add it.
-        if not self._graph[subroot]:
-            self._add(node)
-            self._connect(subroot, node)
-            return
-
-        # If one leaf... it's hard!
-        # A node can have one leaf if it is a root node or the last node on a
-        # branch. Anything else will have more than one leaf (potentially both
-        # upstream and downstream, but since we don't consider hierarchy
-        # currently, that's irrelevant). I think this is a fact to exploit, and
-        # is in fact the specific case below relies on this.
-        if len(self._graph[subroot]) == 1:
-            root = subroot
-            leaf = self._graph[subroot][0]
-
-            # If not handled specifically, we get infinite recursion.
-            if (root < node < leaf or root > node > leaf) and root == self._root:
-                self._add(node)
-                self._connect(node, leaf)
-                return
-            elif root < node < leaf or root > node > leaf:
-                self._add(node)
-                self._connect(node, root)
-                return
-
-            if root < leaf:
-                if node < root:
-                    self._add(node)
-                    self._connect(node, root)
-                    return
-                else:
-                    self._insert(node, subroot=leaf)
-            else:
-                if node > root:
-                    self._add(node)
-                    self._connect(node, root)
-                    return
-                else:
-                    self._insert(node, subroot=leaf)
-
-        # If two leaves, insert it against the appropriate leaf.
-        if len(self._graph[subroot]) == 2:
-            if node < subroot:
-                self._insert(node, subroot=self._graph[subroot][0])
-            else:
-                self._insert(node, subroot=self._graph[subroot][1])
+        pass
 
     def __eq__(self, other):
         return self._graph.__eq__(other)
@@ -124,3 +72,27 @@ class Tree:
 
     def __repr__(self):
         return self._graph.__repr__()
+
+
+@total_ordering
+class Node:
+    def __init__(self, label):
+        self._label = label
+
+    @property
+    def label(self):
+        return self._label
+
+    def __eq__(self, other):
+        if not isinstance(other, Node):
+            raise TypeError('Only Node types can be compared')
+        return self.label.__eq__(other.label)
+
+    def __lt__(self, other):
+        if not isinstance(other, Node):
+            raise TypeError('Only Node types can be compared')
+        return self.label.__lt__(other.label)
+
+    def __hash__(self):
+        return self.label.__hash__()
+
