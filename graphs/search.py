@@ -1,8 +1,14 @@
+from .objects import Tree
+
+
 def breadth_first_search(graph):
     discovered = []
     queue = []
 
-    start_node = next(iter(graph))
+    if isinstance(graph, Tree):
+        start_node = graph.root
+    else:
+        start_node = next(iter(graph))
     queue.append(start_node)
 
     while queue:
@@ -17,7 +23,10 @@ def breadth_first_search(graph):
 
 def recursive_breadth_first_search(graph, queue=None, discovered=None):
     if queue is None:
-        queue = [next(iter(graph))]
+        if isinstance(graph, Tree):
+            queue = [graph.root]
+        else:
+            queue = [next(iter(graph))]
 
     if discovered is None:
         discovered = []
@@ -37,7 +46,10 @@ def depth_first_search(graph):
     discovered = []
     stack = []
 
-    start_node = next(iter(graph))
+    if isinstance(graph, Tree):
+        start_node = graph.root
+    else:
+        start_node = next(iter(graph))
     stack.append(start_node)
 
     while stack:
@@ -52,7 +64,10 @@ def depth_first_search(graph):
 
 def recursive_depth_first_search(graph, node=None, discovered=None):
     if not node:
-        node = next(iter(graph))
+        if isinstance(graph, Tree):
+            node = graph.root
+        else:
+            node = next(iter(graph))
 
     if not discovered:
         discovered = []

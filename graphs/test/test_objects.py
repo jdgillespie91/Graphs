@@ -121,106 +121,55 @@ class TestGraph:
 class TestTree:
     def test_empty_tree(self):
         tree = Tree()
-        assert tree == {}
+        assert {} == tree
 
     def test_insert_into_empty_tree(self):
         tree = Tree()
-        tree.insert('A')
-        assert tree == {'A': set()}
+        with pytest.raises(TypeError):
+            tree.insert('A')
+
+        node = Node('A')
+        tree = Tree()
+        tree.insert(node)
+        assert {node: set()} == tree
+        assert node == tree.root
 
     def test_instantiate_tree_with_node(self):
-        tree = Tree('A')
-        assert tree == {'A': set()}
+        node = Node('A')
+        tree = Tree(node)
+        assert {node: set()} == tree
+        assert node == tree.root
 
     def test_insert(self):
-        # TODO Split out tree types into separate tests then use parameterize.
-        # Empty tree.
-        tree = Tree()
-        tree.insert('A')
-        assert tree == {'A': set()}
+        # Define some nodes.
+        a_node = Node('A')
+        b_node = Node('B')
+        c_node = Node('C')
+        d_node = Node('D')
+        e_node = Node('E')
+        f_node = Node('F')
+        g_node = Node('G')
+        h_node = Node('H')
+        i_node = Node('I')
+        j_node = Node('J')
 
-        # Trees with no leaves.
-        tree = Tree('B')
-        tree.insert('A')
-        assert tree == {'A': {'B'}, 'B': {'A'}}
-
-        tree = Tree('B')
-        tree.insert('C')
-        assert tree == {'B': {'C'}, 'C': {'B'}}
-
-        # Trees with one leaf where the root is bigger than the leaf.
-        tree = Tree('D')
-        tree.insert('B')
-        tree.insert('A')
-        assert tree == {'A': {'B'}, 'B': {'A', 'D'}, 'D': {'B'}}
-
-        tree = Tree('D')
-        tree.insert('B')
-        tree.insert('C')
-        assert tree == {'B': {'C', 'D'}, 'C': {'B'}, 'D': {'B'}}
-
-        tree = Tree('D')
-        tree.insert('B')
-        tree.insert('E')
-        assert tree == {'B': {'D'}, 'D': {'B', 'E'}, 'E': {'D'}}
-
-        # Trees with one leaf where the root is bigger than the leaf.
-        tree = Tree('B')
-        tree.insert('D')
-        tree.insert('A')
-        assert tree == {'A': {'B'}, 'B': {'A', 'D'}, 'D': {'B'}}
-
-        tree = Tree('B')
-        tree.insert('D')
-        tree.insert('C')
-        assert tree == {'B': {'D'}, 'C': {'D'}, 'D': {'B', 'C'}}
-
-        tree = Tree('B')
-        tree.insert('D')
-        tree.insert('E')
-        assert tree == {'B': {'D'}, 'D': {'B', 'E'}, 'E': {'D'}}
-
-        # Trees with two leaves.
-        tree = Tree('D')
-        tree.insert('B')
-        tree.insert('F')
-        tree.insert('A')
-        assert tree == {'A': {'B'}, 'B': {'A', 'D'}, 'D': {'B', 'F'}, 'F': {'D'}}
-
-        tree = Tree('D')
-        tree.insert('B')
-        tree.insert('F')
-        tree.insert('C')
-        assert tree == {'B': {'C', 'D'}, 'C': {'B'}, 'D': {'B', 'F'}, 'F': {'D'}}
-
-        tree = Tree('D')
-        tree.insert('B')
-        tree.insert('F')
-        tree.insert('E')
-        assert tree == {'B': {'D'}, 'D': {'B', 'F'}, 'E': {'F'}, 'F': {'D', 'E'}}
-
-        tree = Tree('D')
-        tree.insert('B')
-        tree.insert('F')
-        tree.insert('G')
-        assert tree == {'B': {'D'}, 'D': {'B', 'F'}, 'F': {'D', 'G'}, 'G': {'F'}}
-
-        # TODO Write a failing test (or test case within this test) to cover bigger trees. At this
-        # point, it's probably necessary to automate this, but we'll see.
-        tree = Tree('F')
-        for node in ['C', 'I', 'A', 'D', 'H', 'J', 'B', 'E', 'G']:
+        # Insert the nodes.
+        tree = Tree(f_node)
+        for node in [c_node, i_node, a_node, d_node, h_node, j_node, b_node, e_node, g_node]:
             tree.insert(node)
+
+        # Verify the result.
         assert tree == {
-            'A': {'B', 'C'},
-            'B': {'A'},
-            'C': {'A', 'D', 'F'},
-            'D': {'C', 'E'},
-            'E': {'D'},
-            'F': {'C', 'I'},
-            'G': {'H'},
-            'H': {'G', 'I'},
-            'I': {'F', 'H', 'J'},
-            'J': {'I'}
+            a_node: {b_node, c_node},
+            b_node: {a_node},
+            c_node: {a_node, d_node, f_node},
+            d_node: {c_node, e_node},
+            e_node: {d_node},
+            f_node: {c_node, i_node},
+            g_node: {h_node},
+            h_node: {g_node, i_node},
+            i_node: {f_node, h_node, j_node},
+            j_node: {i_node}
         }
 
 
@@ -234,40 +183,20 @@ class TestNode:
         bar = Node('bar')
         assert [bar, foo] == sorted([foo, bar])
 
-    def test_nodes_cannot_be_compared_to_other_types(self):
+    def test_node_comparison(self):
         foo = Node('foo')
+        assert not 'foo' == foo
+
         with pytest.raises(TypeError):
-            'foo' == foo
+            'foo' > foo
 
-
-class TestGraphOfNodes:
-    def test_behaviour(self):
-        """ Verify some standard behaviour of a graph.
-
-        First, nodes must be hashable so that the dictionary lookup in the
-        graph works correctly. Second, nodes must be comparable so that they
-        may be returned in order and iterated over in order.
-
-        """
-        graph = Graph()
+    def test_behaviour_of_node_children(self):
         foo = Node('foo')
-        bar = Node('bar')
-        baz = Node('baz')
 
-        # Ensure the dictionary lookup works.
-        graph.add(foo)
-        graph.add(bar)
-        graph.add(baz)
-        graph.connect(foo, bar)
-        graph.connect(foo, baz)
-        graph.connect(bar, baz)
+        # The children should be None initially.
+        for ancestor in [foo.left_child, foo.right_child]:
+            assert ancestor is None
 
-        # Ensure the nodes are returned in order.
-        assert [bar, baz] == graph[foo]
-        assert [baz, foo] == graph[bar]
-        assert [bar, foo] == graph[baz]
-
-        # Ensure the nodes are iterated over in order.
-        i = iter(graph)
-        for label in sorted([foo, bar, baz]):
-            assert next(i) == label
+        # The children may be set.
+        foo.left_child = 'bar'
+        foo.right_child = 'baz'

@@ -52,6 +52,7 @@ class Graph:
 class Tree:
     def __init__(self, node=None):
         self._graph = Graph()
+        self._root = None
         if node:
             self.insert(node)
 
@@ -61,8 +62,35 @@ class Tree:
     def _connect(self, first_node, second_node):
         self._graph.connect(first_node, second_node)
 
+    def _insert(self, node, subroot):
+        if node < subroot:
+            if subroot.left_child:
+                self._insert(node, subroot.left_child)
+            else:
+                subroot.left_child = node
+                self._add(node)
+                self._connect(node, subroot)
+        elif node > subroot:
+            if subroot.right_child:
+                self._insert(node, subroot.right_child)
+            else:
+                subroot.right_child = node
+                self._add(node)
+                self._connect(node, subroot)
+
     def insert(self, node):
-        pass
+        if not isinstance(node, Node):
+            raise TypeError('Trees must contain Nodes')
+
+        if not self._graph:
+            self._add(node)
+            self._root = node
+        else:
+            self._insert(node, self._root)
+
+    @property
+    def root(self):
+        return self._root
 
     def __eq__(self, other):
         return self._graph.__eq__(other)
@@ -73,19 +101,46 @@ class Tree:
     def __repr__(self):
         return self._graph.__repr__()
 
+    def __iter__(self):
+        return self._graph.__iter__()
+
+    def __next__(self):
+        return self._graph.__next__()
+
+    def __getitem__(self, node):
+        return self._graph.__getitem__(node)
+
 
 @total_ordering
 class Node:
     def __init__(self, label):
         self._label = label
+        self._left_child = None
+        self._right_child = None
 
     @property
     def label(self):
         return self._label
 
+    @property
+    def left_child(self):
+        return self._left_child
+
+    @left_child.setter
+    def left_child(self, value):
+        self._left_child = value
+
+    @property
+    def right_child(self):
+        return self._right_child
+
+    @right_child.setter
+    def right_child(self, value):
+        self._right_child = value
+
     def __eq__(self, other):
         if not isinstance(other, Node):
-            raise TypeError('Only Node types can be compared')
+            return False
         return self.label.__eq__(other.label)
 
     def __lt__(self, other):
@@ -96,3 +151,5 @@ class Node:
     def __hash__(self):
         return self.label.__hash__()
 
+    def __repr__(self):
+        return self.label.__repr__()

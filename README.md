@@ -4,11 +4,14 @@ To aid this, I've built a very small Python library that can be used to build gr
 
 ### Usage
 
+#### Graphs
+
 Instantiate an empty graph
 
 ```python
 >>> graph = graphs.Graph() 
 ```
+
 Add a node
 
 ```python
@@ -22,6 +25,7 @@ Add another node and connect it
 ```python
 >>> graph.add('B')
 >>> graph.connect('A', 'B')
+>>> graph
 {'A': {'B'}, 'B': {'A'}}
 ```
 
@@ -32,3 +36,28 @@ The graph is then traversable.
 ['A', 'B']
 ```
 
+#### Trees
+
+Instantiate an empty tree
+
+```python
+>>> tree = graphs.Tree()
+```
+
+Insert a node (note that the type is now important)
+
+```python
+>>> node = graphs.Node('B')
+>>> tree.insert(node)
+>>> tree
+{'B': set()}
+```
+
+The tree is then traversable.
+
+```python
+>>> node = graphs.Node('A')
+>>> tree.insert(node)
+>>> graphs.search.breadth_first_search(tree)
+['B', 'A']
+```
