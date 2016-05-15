@@ -15,13 +15,25 @@ class Graph:
             self._graph[connected_node].remove(node)
         del self._graph[node]
 
+    def _connect(self, first_node, second_node):
+        try:
+            self._graph[first_node].add(second_node)
+        except KeyError:
+            raise KeyError('"{}" is not in the graph'.format(first_node))
+
     def connect(self, first_node, second_node):
-        self._graph[first_node].add(second_node)
-        self._graph[second_node].add(first_node)
+        self._connect(first_node, second_node)
+        self._connect(second_node, first_node)
+
+    def _disconnect(self, first_node, second_node):
+        try:
+            self._graph[first_node].discard(second_node)
+        except KeyError:
+            raise KeyError('"{}" is not in the graph'.format(first_node))
 
     def disconnect(self, first_node, second_node):
-        self._graph[first_node].discard(second_node)
-        self._graph[second_node].discard(first_node)
+        self._disconnect(first_node, second_node)
+        self._disconnect(second_node, first_node)
 
     def __eq__(self, other):
         return self._graph == other
