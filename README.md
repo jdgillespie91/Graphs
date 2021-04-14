@@ -63,3 +63,5 @@ The tree is then traversable.
 >>> graphs.search.breadth_first_search(tree)
 ['B', 'A']
 ```
+
+Foo
